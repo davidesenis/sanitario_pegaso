@@ -1,0 +1,34 @@
+package com.example.sanitariobe.entity;
+
+import javax.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "paziente")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Paziente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false)
+    private String cognome;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "numero_telefono")
+    private String numeroTelefono;
+
+    @Column(nullable = false)
+    private String password;
+}
+
+
