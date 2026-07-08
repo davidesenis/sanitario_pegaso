@@ -1,0 +1,10 @@
+2026-04-29T08:10:16.968Z [INFO] ----------------------invoke appmod-list-jdks----------------------
+2026-04-29T08:10:16.969Z [INFO] [Tool.invoke]({name: appmod-list-jdks, modelId: auto, input: {
+  "sessionId": "",
+  "projectPath": "c:\\Progetti\\Sanitario\\sanitario-be"
+}}).
+2026-04-29T08:10:16.970Z [INFO] [Tool.invoke] do invoke.
+2026-04-29T08:10:17.036Z [INFO] [Tool.invoke]({result: {
+  "message": "We found following jdks in your system:\n\n1. Java 11.0.28\n   📁 Path: C:\\Program Files\\Java\\jdk-11.0.28+6\\bin\n   🏷️ Source: PATH,JAVA_HOME\n\n2. Java 17.0.17\n   📁 Path: C:\\Program Files\\Java\\jdk-17.0.17+10\\bin\n   🏷️ Source: PATH\n\n3. Java 25.0.1\n   📁 Path: C:\\Users\\d.senis\\.jdks\\openjdk-25.0.1\\bin\n   🏷️ Source: others\n\nTotal: 3 JDK installation(s) found"
+}}).
+2026-04-29T08:10:17.037Z [INFO] ----------------------invoked appmod-list-jdks----------------------
