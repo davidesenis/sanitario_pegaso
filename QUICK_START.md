@@ -2,7 +2,7 @@
 
 ## 1️⃣ Avvia il Backend
 
-Assicurati di avere **Java 21** installato.
+Assicurati di avere **Java 21 (JDK)** installato. Su Windows, `JAVA_HOME` deve puntare alla directory del JDK (non a una JRE), ad esempio `C:\Program Files\Java\jdk-21.0.10`; dopo la modifica, apri un nuovo terminale.
 
 ```bash
 cd sanitario-be

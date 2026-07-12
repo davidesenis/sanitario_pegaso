@@ -1,5 +1,7 @@
 package com.example.sanitariobe.controller;
 
+import com.example.sanitariobe.dto.PrenotazioneMedicoResponseDto;
+import com.example.sanitariobe.dto.PrenotazionePazienteResponseDto;
 import com.example.sanitariobe.entity.Prenotazione;
 import com.example.sanitariobe.service.PrenotazioneService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/prenotazioni")
@@ -23,22 +26,15 @@ public class PrenotazioneController {
 
     private final PrenotazioneService prenotazioneService;
 
-    @GetMapping("/medico/{medicoId}/in-attesa")
-    @Operation(summary = "Ottieni prenotazioni in attesa di un medico", description = "Recupera tutte le prenotazioni in attesa di conferma per un medico specifico")
-    @ApiResponse(responseCode = "200", description = "Lista delle prenotazioni in attesa")
-    public List<Prenotazione> getByMedicoIdInAttesa(@PathVariable Long medicoId) {
-        return prenotazioneService.findByMedicoIdAndStato(medicoId, com.example.sanitariobe.entity.StatoPrenotazione.IN_ATTESA);
-    }
-
     @PutMapping("/{id}/accetta")
     @Operation(summary = "Accetta una prenotazione", description = "Cambia lo stato della prenotazione a CONFERMATA")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Prenotazione accettata"),
         @ApiResponse(responseCode = "404", description = "Prenotazione non trovata")
     })
-    public ResponseEntity<Prenotazione> accettaPrenotazione(@PathVariable Long id) {
+    public ResponseEntity<PrenotazioneMedicoResponseDto> accettaPrenotazione(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(prenotazioneService.accettaPrenotazione(id));
+            return ResponseEntity.ok(PrenotazioneMedicoResponseDto.from(prenotazioneService.accettaPrenotazione(id)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
@@ -50,9 +46,9 @@ public class PrenotazioneController {
         @ApiResponse(responseCode = "200", description = "Prenotazione rifiutata"),
         @ApiResponse(responseCode = "404", description = "Prenotazione non trovata")
     })
-    public ResponseEntity<Prenotazione> rifiutaPrenotazione(@PathVariable Long id) {
+    public ResponseEntity<PrenotazioneMedicoResponseDto> rifiutaPrenotazione(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(prenotazioneService.rifiutaPrenotazione(id));
+            return ResponseEntity.ok(PrenotazioneMedicoResponseDto.from(prenotazioneService.rifiutaPrenotazione(id)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
@@ -61,15 +57,19 @@ public class PrenotazioneController {
     @GetMapping("/paziente/{pazienteId}")
     @Operation(summary = "Ottieni prenotazioni di un paziente", description = "Recupera tutte le prenotazioni di un paziente specifico")
     @ApiResponse(responseCode = "200", description = "Lista delle prenotazioni del paziente")
-    public List<Prenotazione> getByPazienteId(@PathVariable Long pazienteId) {
-        return prenotazioneService.findByPazienteId(pazienteId);
+    public List<PrenotazionePazienteResponseDto> getByPazienteId(@PathVariable Long pazienteId) {
+        return prenotazioneService.findByPazienteId(pazienteId).stream()
+                .map(PrenotazionePazienteResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/medico/{medicoId}")
     @Operation(summary = "Ottieni prenotazioni di un medico", description = "Recupera tutte le prenotazioni di un medico specifico")
     @ApiResponse(responseCode = "200", description = "Lista delle prenotazioni del medico")
-    public List<Prenotazione> getByMedicoId(@PathVariable Long medicoId) {
-        return prenotazioneService.findByMedicoId(medicoId);
+    public List<PrenotazioneMedicoResponseDto> getByMedicoId(@PathVariable Long medicoId) {
+        return prenotazioneService.findByMedicoId(medicoId).stream()
+                .map(PrenotazioneMedicoResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/medico/{medicoId}/occupati")
@@ -100,7 +100,8 @@ public class PrenotazioneController {
     })
     public ResponseEntity<?> create(@RequestBody Prenotazione prenotazione) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(prenotazioneService.save(prenotazione));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(PrenotazionePazienteResponseDto.from(prenotazioneService.save(prenotazione)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IllegalStateException e) {

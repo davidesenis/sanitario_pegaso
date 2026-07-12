@@ -1,6 +1,8 @@
 package com.example.sanitariobe.controller;
 
 import com.example.sanitariobe.dto.LoginRequestDto;
+import com.example.sanitariobe.dto.PazienteProfiloResponseDto;
+import com.example.sanitariobe.dto.PazienteSintesiResponseDto;
 import com.example.sanitariobe.entity.Paziente;
 import com.example.sanitariobe.service.PazienteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pazienti")
@@ -23,21 +26,23 @@ public class PazienteController {
     private final PazienteService pazienteService;
 
     @GetMapping
-    @Operation(summary = "Ottieni tutti i pazienti", description = "Recupera la lista completa di tutti i pazienti presenti nel sistema")
-    @ApiResponse(responseCode = "200", description = "Lista dei pazienti")
-    public List<Paziente> getAll() {
-        return pazienteService.findAll();
+    @Operation(summary = "Ottieni tutti i pazienti", description = "Recupera la sintesi dei pazienti presenti nel sistema")
+    @ApiResponse(responseCode = "200", description = "Lista sintetica dei pazienti")
+    public List<PazienteSintesiResponseDto> getAll() {
+        return pazienteService.findAll().stream()
+                .map(PazienteSintesiResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Ottieni un paziente per ID", description = "Recupera un paziente specifico tramite il suo ID")
+    @Operation(summary = "Ottieni un paziente per ID", description = "Recupera la sintesi di un paziente specifico tramite il suo ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Paziente trovato"),
         @ApiResponse(responseCode = "404", description = "Paziente non trovato")
     })
-    public ResponseEntity<Paziente> getById(@PathVariable Long id) {
+    public ResponseEntity<PazienteSintesiResponseDto> getById(@PathVariable Long id) {
         return pazienteService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(paziente -> ResponseEntity.ok(PazienteSintesiResponseDto.from(paziente)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -52,7 +57,8 @@ public class PazienteController {
         if (pazienteService.existsByEmail(paziente.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email già registrata");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(pazienteService.save(paziente));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(PazienteProfiloResponseDto.from(pazienteService.save(paziente)));
     }
 
     @PostMapping("/login")
@@ -64,7 +70,7 @@ public class PazienteController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
         var paziente = pazienteService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if (paziente.isPresent()) {
-            return ResponseEntity.ok(paziente.get());
+            return ResponseEntity.ok(PazienteProfiloResponseDto.from(paziente.get()));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email o password non valide");
     }

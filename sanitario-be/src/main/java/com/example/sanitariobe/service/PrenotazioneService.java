@@ -28,10 +28,6 @@ public class PrenotazioneService {
         return prenotazioneRepository.findByMedicoId(medicoId);
     }
 
-    public List<Prenotazione> findByMedicoIdAndStato(Long medicoId, StatoPrenotazione stato) {
-        return prenotazioneRepository.findByMedicoIdAndStato(medicoId, stato);
-    }
-
     @Transactional
     public Prenotazione save(Prenotazione prenotazione) {
         if (prenotazione.getMedico() == null || prenotazione.getMedico().getId() == null || prenotazione.getDataOra() == null) {

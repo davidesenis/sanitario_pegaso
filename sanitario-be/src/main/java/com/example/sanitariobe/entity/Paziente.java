@@ -1,5 +1,6 @@
 package com.example.sanitariobe.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import lombok.*;
 
@@ -28,6 +29,7 @@ public class Paziente {
     private String numeroTelefono;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }
 

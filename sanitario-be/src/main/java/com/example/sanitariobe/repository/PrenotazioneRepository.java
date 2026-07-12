@@ -1,7 +1,6 @@
 package com.example.sanitariobe.repository;
 
 import com.example.sanitariobe.entity.Prenotazione;
-import com.example.sanitariobe.entity.StatoPrenotazione;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +14,6 @@ import java.util.Optional;
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, Long> {
     List<Prenotazione> findByPazienteId(Long pazienteId);
     List<Prenotazione> findByMedicoId(Long medicoId);
-    List<Prenotazione> findByMedicoIdAndStato(Long medicoId, StatoPrenotazione stato);
     boolean existsByMedicoIdAndDataOra(Long medicoId, LocalDateTime dataOra);
     List<Prenotazione> findByMedicoIdAndDataOraBetween(Long medicoId, LocalDateTime start, LocalDateTime end);
 

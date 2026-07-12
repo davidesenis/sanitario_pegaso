@@ -40,7 +40,6 @@ POST   /api/prenotazioni          → crea (201) | 409 slot occupato
 DELETE /api/prenotazioni/{id}     → elimina (204)
 GET    /api/prenotazioni/paziente/{id}            → per paziente (200)
 GET    /api/prenotazioni/medico/{id}              → per medico (200)
-GET    /api/prenotazioni/medico/{id}/in-attesa    → pending (200)
 GET    /api/prenotazioni/medico/{id}/occupati?data={data} → slot occupati (200)
 PUT    /api/prenotazioni/{id}/accetta             → accetta (200)
 PUT    /api/prenotazioni/{id}/rifiuta             → rifiuta (200)
